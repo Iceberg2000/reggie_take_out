@@ -6,6 +6,7 @@ import edu.haue.reggie.common.R;
 import edu.haue.reggie.entity.Employee;
 import edu.haue.reggie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -68,11 +69,17 @@ public class EmployeeController {
     }
 
     @GetMapping("/page")
-    public R<Page> page(Integer page, Integer pageSize, String name) {
-        //封装分页条件
-        Page<Employee> page = new Page<>();
-        //封装查询条件
-        //返回查询结果
+    public R<Page> page(int page, int pageSize, String name) {
+        //构造分页构造器
+        Page pageInfo = new Page(page, pageSize);
+        //构造查询构造器
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        //添加查询条件
+        queryWrapper.like(StringUtils.isNotEmpty(name), Employee::getName, name);
+        queryWrapper.orderByDesc(Employee::getUpdateTime);
+
+        employeeService.page(pageInfo, queryWrapper);
+        return R.success(pageInfo);
     }
 
 }
