@@ -34,4 +34,10 @@ public class CategoryController {
         return R.success(pageInfo);
     }
 
+    @DeleteMapping
+    public R<String> delete(long id) {
+        categoryService.delete(id);
+        return R.success("删除分类成功");
+    }
+
 }

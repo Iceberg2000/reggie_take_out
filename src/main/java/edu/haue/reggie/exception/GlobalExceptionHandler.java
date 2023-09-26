@@ -1,5 +1,6 @@
 package edu.haue.reggie.exception;
 
+import edu.haue.reggie.common.CustomException;
 import edu.haue.reggie.common.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,13 @@ public class GlobalExceptionHandler {
             return R.error(split[2]+"已存在");
         }
         return R.error("未知错误");
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public R<String> exceptionHandle(CustomException ex) {
+//        log.info(ex.getMessage());
+        String message = ex.getMessage();
+        return R.error(message);
     }
 
 }
